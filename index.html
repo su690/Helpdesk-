@@ -1,1 +1,59 @@
 #Initial Phase
+
+
+Message.java
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "message")
+public class Message {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "content")   // matches DB column
+    private String content;
+
+    // getters and setters
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+}
+
+
+
+App.js
+
+const handleSubmit = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: text }),  // must match entity field
+    });
+
+    if (response.ok) {
+      alert("Message sent");
+      setText("");
+    } else {
+      alert("Failed to send message");
+    }
+  } catch (error) {
+    alert("Error sending message");
+  }
+};

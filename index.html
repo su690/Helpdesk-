@@ -124,3 +124,173 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+
+
+
+#5 input section 
+
+
+import React, { useState } from "react";
+
+function App() {
+  // States for Course
+  const [courseTitle, setCourseTitle] = useState("");
+  const [courseDesc, setCourseDesc] = useState("");
+  const [courseURL, setCourseURL] = useState("");
+  const [courseId, setCourseId] = useState(""); // for update/delete
+
+  // States for Enrollment
+  const [studentId, setStudentId] = useState("");
+  const [enrollCourseId, setEnrollCourseId] = useState("");
+
+  // Helper to send POST requests
+  const sendData = async (url, body) => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        alert("Success ✅");
+      } else {
+        alert("Failed ❌");
+      }
+    } catch (err) {
+      alert("Error: " + err);
+    }
+  };
+
+  return (
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h1>Course & Enrollment Management</h1>
+
+      {/* 1. Create Course */}
+      <h2>Create Course</h2>
+      <input
+        type="text"
+        placeholder="Course Title"
+        value={courseTitle}
+        onChange={(e) => setCourseTitle(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Description"
+        value={courseDesc}
+        onChange={(e) => setCourseDesc(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Content URL"
+        value={courseURL}
+        onChange={(e) => setCourseURL(e.target.value)}
+      />
+      <button
+        onClick={() =>
+          sendData("http://localhost:8080/courses", {
+            title: courseTitle,
+            description: courseDesc,
+            contentURL: courseURL,
+          })
+        }
+      >
+        Create
+      </button>
+
+      {/* 2. Update Course */}
+      <h2>Update Course</h2>
+      <input
+        type="text"
+        placeholder="Course ID"
+        value={courseId}
+        onChange={(e) => setCourseId(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="New Title"
+        value={courseTitle}
+        onChange={(e) => setCourseTitle(e.target.value)}
+      />
+      <button
+        onClick={() =>
+          sendData(`http://localhost:8080/courses/update/${courseId}`, {
+            title: courseTitle,
+            description: courseDesc,
+            contentURL: courseURL,
+          })
+        }
+      >
+        Update
+      </button>
+
+      {/* 3. Delete Course */}
+      <h2>Delete Course</h2>
+      <input
+        type="text"
+        placeholder="Course ID"
+        value={courseId}
+        onChange={(e) => setCourseId(e.target.value)}
+      />
+      <button
+        onClick={() =>
+          sendData(`http://localhost:8080/courses/delete/${courseId}`, {})
+        }
+      >
+        Delete
+      </button>
+
+      {/* 4. Enroll in Course */}
+      <h2>Enroll in Course</h2>
+      <input
+        type="text"
+        placeholder="Student ID"
+        value={studentId}
+        onChange={(e) => setStudentId(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Course ID"
+        value={enrollCourseId}
+        onChange={(e) => setEnrollCourseId(e.target.value)}
+      />
+      <button
+        onClick={() =>
+          sendData("http://localhost:8080/enrollments", {
+            studentId,
+            courseId: enrollCourseId,
+          })
+        }
+      >
+        Enroll
+      </button>
+
+      {/* 5. Track Progress */}
+      <h2>Track Progress</h2>
+      <input
+        type="text"
+        placeholder="Enrollment ID"
+        value={studentId}
+        onChange={(e) => setStudentId(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Progress (%)"
+        value={courseDesc}
+        onChange={(e) => setCourseDesc(e.target.value)}
+      />
+      <button
+        onClick={() =>
+          sendData("http://localhost:8080/progress", {
+            enrollmentId: studentId,
+            progress: courseDesc,
+          })
+        }
+      >
+        Update Progress
+      </button>
+    </div>
+  );
+}
+
+export default App;

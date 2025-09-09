@@ -57,3 +57,70 @@ const handleSubmit = async () => {
     alert("Error sending message");
   }
 };
+
+
+
+
+#app.js
+
+import React, { useState } from "react";
+
+function App() {
+  const [text, setText] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: text }),
+      });
+
+      if (response.ok) {
+        alert("Message sent: " + text);
+        setText("");
+      } else {
+        alert("Failed to send message");
+      }
+    } catch (error) {
+      alert("Error: " + error);
+    }
+  };
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <h2>Send a Message</h2>
+      <input
+        type="text"
+        value={text}
+        placeholder="Type your message"
+        onChange={(e) => setText(e.target.value)}
+        style={{ padding: "10px", width: "300px", marginRight: "10px" }}
+      />
+      <button
+        onClick={handleSubmit}
+        style={{ padding: "10px 20px", cursor: "pointer" }}
+      >
+        Send
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+#index.js
+
+
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
